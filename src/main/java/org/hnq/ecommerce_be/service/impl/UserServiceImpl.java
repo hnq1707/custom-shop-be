@@ -5,13 +5,9 @@ import org.hnq.ecommerce_be.dto.auth.UserDto;
 import org.hnq.ecommerce_be.entity.User;
 import org.hnq.ecommerce_be.repository.UserRepository;
 import org.hnq.ecommerce_be.service.UserService;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.Optional;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -54,13 +50,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto getCurrentUser() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null || auth.getName() == null) {
+    public UserDto getCurrentUser(String userId) {
+        if (userId == null || userId.isBlank()) {
             throw new ResponseStatusException(UNAUTHORIZED, "Not authenticated");
         }
-        Optional<User> opt = userRepository.findByEmail(auth.getName());
-        User user = opt.orElseThrow(() -> new ResponseStatusException(UNAUTHORIZED, "User not found"));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(UNAUTHORIZED, "User not found"));
         return toDto(user);
     }
 

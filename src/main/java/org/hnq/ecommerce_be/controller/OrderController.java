@@ -3,6 +3,7 @@ package org.hnq.ecommerce_be.controller;
 import jakarta.validation.Valid;
 import org.hnq.ecommerce_be.dto.auth.UserDto;
 import org.hnq.ecommerce_be.dto.order.OrderCreateRequest;
+import org.hnq.ecommerce_be.dto.order.OrderResponse;
 import org.hnq.ecommerce_be.entity.Order;
 import org.hnq.ecommerce_be.service.OrderService;
 import org.hnq.ecommerce_be.service.UserService;
@@ -24,15 +25,14 @@ public class OrderController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Order create(@Valid @RequestBody OrderCreateRequest request) {
-        UserDto me = userService.getCurrentUser();
-        return orderService.createOrder(me.getId(), request);
+    public OrderResponse create(@Valid @RequestBody OrderCreateRequest request) {
+        return orderService.createOrder(request);
         
     }
 
     @GetMapping("/me")
-    public List<Order> myOrders() {
-        UserDto me = userService.getCurrentUser();
+    public List<OrderResponse> myOrders(@RequestParam("userId") String userId) {
+        UserDto me = userService.getCurrentUser(userId);
         return orderService.getOrdersByUser(me.getId());
     }
 }

@@ -25,15 +25,7 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .cors(Customizer.withDefaults())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers(
-                        "/api/auth/register",
-                        "/api/auth/login",
-                        "/static/designs/**",
-                        "/actuator/health"
-                ).permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/products").permitAll()
-                .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()
             )
             .httpBasic(Customizer.withDefaults());
         return http.build();
@@ -47,7 +39,7 @@ public class SecurityConfig {
     @Bean
     public UserDetailsService userDetailsService(UserRepository userRepository) {
         return username -> userRepository.findByEmail(username)
-                .map(u -> (UserDetails) org.springframework.security.core.userdetails.User
+                .map(u -> org.springframework.security.core.userdetails.User
                         .withUsername(u.getEmail())
                         .password(u.getPasswordHash())
                         .roles(u.getRole() == null ? "USER" : u.getRole())

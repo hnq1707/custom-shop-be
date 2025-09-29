@@ -26,7 +26,6 @@ public class ProductController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('ADMIN')")
     public Product create(@Valid @RequestBody ProductRequest request) {
         return productService.create(request);
     }

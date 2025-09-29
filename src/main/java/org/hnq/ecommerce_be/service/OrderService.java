@@ -2,16 +2,16 @@ package org.hnq.ecommerce_be.service;
 
 import org.hnq.ecommerce_be.dto.admin.StatsResponse;
 import org.hnq.ecommerce_be.dto.order.OrderCreateRequest;
-import org.hnq.ecommerce_be.entity.Order;
+import org.hnq.ecommerce_be.dto.order.OrderResponse;
 
 import java.util.List;
 
 public interface OrderService {
-    Order createOrder(String userId, OrderCreateRequest request);
-    List<Order> getOrdersByUser(String userId);
+    OrderResponse createOrder(OrderCreateRequest request);
+    List<OrderResponse> getOrdersByUser(String userId);
 
     // Admin
-    List<Order> getAllOrders();
-    Order updateStatus(String orderId, String status);
+    List<OrderResponse> getAllOrders();
+    OrderResponse updateStatus(String orderId, String status);
     StatsResponse getStats();
 }

@@ -3,6 +3,7 @@ package org.hnq.ecommerce_be.controller;
 import jakarta.validation.Valid;
 import org.hnq.ecommerce_be.dto.admin.StatsResponse;
 import org.hnq.ecommerce_be.dto.admin.UpdateStatusRequest;
+import org.hnq.ecommerce_be.dto.order.OrderResponse;
 import org.hnq.ecommerce_be.entity.Order;
 import org.hnq.ecommerce_be.service.OrderService;
 import org.springframework.http.MediaType;
@@ -21,12 +22,12 @@ public class AdminController {
     }
 
     @GetMapping("/orders")
-    public List<Order> allOrders() {
+    public List<OrderResponse> allOrders() {
         return orderService.getAllOrders();
     }
 
     @PatchMapping(path = "/orders/{id}/status", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Order updateStatus(@PathVariable("id") String id, @Valid @RequestBody UpdateStatusRequest request) {
+    public OrderResponse updateStatus(@PathVariable("id") String id, @Valid @RequestBody UpdateStatusRequest request) {
         return orderService.updateStatus(id, request.getStatus());
     }
 

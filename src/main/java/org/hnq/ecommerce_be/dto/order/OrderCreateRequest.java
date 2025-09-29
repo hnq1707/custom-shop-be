@@ -9,6 +9,9 @@ import java.util.List;
 
 @Data
 public class OrderCreateRequest {
+
+    String userId;
+
     @NotEmpty
     private List<@Valid OrderItemDto> items;
 

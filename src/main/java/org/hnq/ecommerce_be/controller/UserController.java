@@ -5,6 +5,7 @@ import org.hnq.ecommerce_be.service.UserService;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -18,7 +19,7 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    public UserDto me() {
-        return userService.getCurrentUser();
+    public UserDto me(@RequestParam("userId") String userId) {
+        return userService.getCurrentUser(userId);
     }
 }
