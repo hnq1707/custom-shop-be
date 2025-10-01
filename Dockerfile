@@ -48,4 +48,4 @@ RUN mkdir -p ${APP_UPLOADS_DESIGNS_DIR}
 VOLUME ["/app/uploads"]
 
 # Start the application
-ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar /app/app.jar"]
+ENTRYPOINT ["sh", "-c", "exec java $JAVA_OPTS -jar /app/app.jar"]
