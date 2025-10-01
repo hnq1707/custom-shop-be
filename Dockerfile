@@ -10,7 +10,7 @@ COPY .mvn .mvn
 COPY mvnw mvnw
 RUN mvn -q -DskipTests dependency:go-offline
 
-# Now copy the source and build
+# Copy source code and build
 COPY src src
 RUN mvn -q -DskipTests package
 
@@ -18,7 +18,10 @@ RUN mvn -q -DskipTests package
 FROM eclipse-temurin:17-jre
 WORKDIR /app
 
-# Default environment variables (can be overridden at runtime via .env)
+# Install CA certificates for SSL
+RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
+
+# Default environment variables (can be overridden via .env)
 ENV SERVER_PORT=8080 \
     SPRING_APPLICATION_NAME=ecommerce_be \
     SPRING_DATA_MONGODB_URI="mongodb+srv://hnq1707:quyen177@cluster0.0phizh4.mongodb.net/mydb?authSource=admin" \
@@ -32,7 +35,7 @@ ENV SERVER_PORT=8080 \
     APP_CORS_ALLOWED_ORIGINS="*" \
     LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_WEB=DEBUG \
     LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY=DEBUG \
-    JAVA_OPTS=""
+    JAVA_OPTS="-Dhttps.protocols=TLSv1.2"
 
 # Expose Spring Boot port
 EXPOSE ${SERVER_PORT}
@@ -44,5 +47,5 @@ COPY --from=build /app/target/*.jar /app/app.jar
 RUN mkdir -p ${APP_UPLOADS_DESIGNS_DIR}
 VOLUME ["/app/uploads"]
 
-# Start the application. Spring will read env vars referenced in application.properties
+# Start the application
 ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar /app/app.jar"]
