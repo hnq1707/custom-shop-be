@@ -1,3 +1,19 @@
+# syntax=docker/dockerfile:1
+
+# ---------- Build stage ----------
+FROM maven:3.9.8-eclipse-temurin-17 AS build
+WORKDIR /app
+
+# Copy only files needed to resolve dependencies first (better layer caching)
+COPY pom.xml ./
+COPY .mvn .mvn
+COPY mvnw mvnw
+RUN mvn -q -DskipTests dependency:go-offline
+
+# Copy source code and build
+COPY src src
+RUN mvn -q -DskipTests package
+
 # ---------- Runtime stage ----------
 FROM eclipse-temurin:17-jre
 WORKDIR /app
