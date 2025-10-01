@@ -14,4 +14,6 @@ public interface OrderService {
     List<OrderResponse> getAllOrders();
     OrderResponse updateStatus(String orderId, String status);
     StatsResponse getStats();
+
+    OrderResponse getOrderById(String id);
 }

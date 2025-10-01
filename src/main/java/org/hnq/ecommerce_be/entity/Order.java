@@ -30,4 +30,6 @@ public class Order {
     private PaymentInfo paymentInfo;
 
     private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
 }

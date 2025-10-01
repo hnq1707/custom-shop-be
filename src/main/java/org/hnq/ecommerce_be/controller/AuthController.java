@@ -27,4 +27,9 @@ public class AuthController {
     public UserDto login(@Valid @RequestBody LoginRequest request) {
         return userService.login(request.getEmail(), request.getPassword());
     }
+
+    @PatchMapping("/change-password")
+    public UserDto changePassword(@RequestParam("userId") String userId, @RequestParam("oldPassword") String oldPassword, @RequestParam("newPassword") String newPassword) {
+        return userService.changePassword(userId,oldPassword,newPassword);
+    }
 }
