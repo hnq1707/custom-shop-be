@@ -51,18 +51,21 @@ public class OrderServiceImpl implements OrderService {
         order.setShippingAddress(request.getShippingAddress());
         order.setPaymentInfo(mapPayment(request.getPaymentInfo()));
         order.setCreatedAt(LocalDateTime.now());
+        order.setUpdatedAt(LocalDateTime.now());
         orderRepository.save(order);
         return toResponse(order);
     }
 
     @Override
     public List<OrderResponse> getOrdersByUser(String userId) {
-        List<Order> orders =  orderRepository.findByUserId(userId);
-        return orders
-                .stream()
+        List<Order> orders = orderRepository.findByUserId(userId);
+
+        return orders.stream()
+                .sorted((o1, o2) -> o2.getCreatedAt().compareTo(o1.getCreatedAt()))
                 .map(this::toResponse)
                 .toList();
     }
+
 
     @Override
     public List<OrderResponse> getAllOrders() {
@@ -78,6 +81,7 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Order not found"));
         order.setStatus(status);
+        order.setUpdatedAt(LocalDateTime.now());
          orderRepository.save(order);
          return toResponse(order);
     }
@@ -136,6 +140,13 @@ public class OrderServiceImpl implements OrderService {
                 .revenueChart(revenueChart)
                 .recentOrders(recentOrders)
                 .build();
+    }
+
+    @Override
+    public OrderResponse getOrderById(String id) {
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Order not found"));
+        return toResponse(order);
     }
 
     private StatsResponse.RecentOrder toRecentOrder(Order order) {
@@ -198,6 +209,7 @@ public class OrderServiceImpl implements OrderService {
                 .shippingAddress(order.getShippingAddress())
                 .paymentInfo(order.getPaymentInfo())
                 .createdAt(order.getCreatedAt() != null ? order.getCreatedAt().toString() : null)
+                .updatedAt(order.getUpdatedAt() != null ? order.getUpdatedAt().toString() : null)
                 .build();
     }
 }

@@ -20,4 +20,5 @@ public class OrderResponse {
     private String shippingAddress;
     private PaymentInfo paymentInfo;
     private String createdAt; // dùng String thay cho LocalDateTime
+    private String updatedAt;
 }

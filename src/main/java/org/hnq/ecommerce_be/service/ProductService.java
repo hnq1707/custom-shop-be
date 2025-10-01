@@ -8,4 +8,6 @@ import java.util.List;
 public interface ProductService {
     Product create(ProductRequest request);
     List<Product> listAll();
+
+
 }

@@ -30,6 +30,11 @@ public class OrderController {
         
     }
 
+    @GetMapping("/{id}")
+    public OrderResponse getOrder(@PathVariable("id") String id) {
+        return orderService.getOrderById(id);
+    }
+
     @GetMapping("/me")
     public List<OrderResponse> myOrders(@RequestParam("userId") String userId) {
         UserDto me = userService.getCurrentUser(userId);

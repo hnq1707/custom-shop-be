@@ -13,7 +13,7 @@ import java.util.UUID;
 @Component
 public class FileUploadUtil {
 
-    private static final String DESIGN_DIR = "uploads/designs"; // cấu hình trong app.properties
+    private static final String DESIGN_DIR = Paths.get(System.getProperty("user.dir"), "uploads", "designs").toString();
 
     public static String saveBase64Image(String base64, String folder) {
         try {
@@ -40,22 +40,26 @@ public class FileUploadUtil {
     }
 
     public static String saveMultipart(MultipartFile file, String folder) {
+        if (file == null || file.isEmpty()) {
+            throw new IllegalArgumentException("file is required");
+        }
+
+        String original = file.getOriginalFilename();
+        String ext = (original != null && original.contains(".")) ? original.substring(original.lastIndexOf('.') + 1) : "png";
+        String fileName = UUID.randomUUID() + "." + ext;
+
+        String targetDir = Paths.get(System.getProperty("user.dir"), "uploads", "designs").toString(); // absolute path
+        Path uploadPath = Paths.get(targetDir, fileName);
+
         try {
-            if (file == null || file.isEmpty()) {
-                throw new IllegalArgumentException("file is required");
-            }
-            String original = file.getOriginalFilename();
-            String ext = (original != null && original.contains(".")) ? original.substring(original.lastIndexOf('.') + 1) : "png";
-            String fileName = UUID.randomUUID() + "." + ext;
-            String targetDir = resolveDir(folder);
-            Path uploadPath = Paths.get(targetDir, fileName);
             Files.createDirectories(uploadPath.getParent());
             file.transferTo(uploadPath.toFile());
-            return publicUrl(folder, fileName);
-        } catch (IOException e) {
+            return "/static/designs/" + fileName; // public URL
+        } catch (IOException | IllegalStateException e) {
             throw new RuntimeException("Failed to save image", e);
         }
     }
+
 
     private static String resolveDir(String folder) {
         // Currently only designs are public; can extend later

@@ -59,6 +59,29 @@ public class UserServiceImpl implements UserService {
         return toDto(user);
     }
 
+    @Override
+    public UserDto update(UserDto userDto) {
+        User user = userRepository.findById(userDto.getId())
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "User not found"));
+        user.setName(userDto.getName());
+        user.setPhone(userDto.getPhone());
+        user.setAddress(userDto.getAddress());
+        user = userRepository.save(user);
+        return toDto(user);
+    }
+
+    @Override
+    public UserDto changePassword(String userId, String oldPassword, String newPassword) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "User not found"));
+        if (!passwordEncoder.matches(oldPassword, user.getPasswordHash())) {
+            throw new ResponseStatusException(UNAUTHORIZED, "Invalid credentials");
+        }
+        user.setPasswordHash(passwordEncoder.encode(newPassword));
+         userRepository.save(user);
+         return toDto(user);
+    }
+
     private static UserDto toDto(User u) {
         return UserDto.builder()
                 .id(u.getId())
